@@ -171,7 +171,7 @@ def plot_selection_result(lst, df):
     plt.yticks(range(plot_df_methods_names.shape[0]), plot_df_methods_names.index)
     plt.show()
 
-
+    #amit
     #print(plot_df_methods_names.values)
 
     None

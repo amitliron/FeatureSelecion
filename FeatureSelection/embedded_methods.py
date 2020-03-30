@@ -53,5 +53,5 @@ def embedded_methods(df, X, y):
 
     lst = []
     lst.append(('embedded', 'lasso', lst1))
-    lst.append(('embedded', 'random_forest', lst2))
+    lst.append(('embedded', 'random\nforest', lst2))
     return lst

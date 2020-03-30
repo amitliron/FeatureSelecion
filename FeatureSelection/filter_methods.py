@@ -5,7 +5,9 @@ import numpy as np
     SelectKBest - require K as input
 '''
 
-def correlation_between_features_and_target(df, X, y, target_label, min_threshold=0.3, show_plot=False):
+def correlation_between_features_and_target(df, min_threshold=0.3, show_plot=False):
+
+    target_label = df.columns[-1]
 
     # print coraltion
     corrlation = df.drop(target_label, axis=1).apply(lambda x: x.corr(df[target_label]))
@@ -30,7 +32,7 @@ def correlation_between_features_and_target(df, X, y, target_label, min_threshol
 
     return lst
 
-def correlation_between_features_to_them_self(df, X, y, target_label, max_threshold=0.3):
+def correlation_between_features_to_them_self(df, max_threshold=0.3):
     feature_names = list(df.columns.values)
     del (feature_names[-1])
 
@@ -48,10 +50,10 @@ def correlation_between_features_to_them_self(df, X, y, target_label, max_thresh
     return lst
 
 
-def filter_methods(df, X, y, target_label):
-    res1 = correlation_between_features_and_target(df, X, y, target_label)
-    res2 = correlation_between_features_to_them_self(df, X, y, target_label)
+def filter_methods(df, X, y):
+    res1 = correlation_between_features_and_target(df)
+    res2 = correlation_between_features_to_them_self(df)
     res = []
-    res.append(('filter', 'correlation_between_features_and_target', res1))
-    res.append(('filter', 'correlation_between_features_to_them_self', res2))
+    res.append(('filter', 'correlation\nbetween\nfeatures\nand\ntarget', res1))
+    res.append(('filter', 'correlation\nbetween\nfeatures\nto_them\nself', res2))
     return res

@@ -199,7 +199,7 @@ def feature_selection(df, target_column_name):
     result.append(res)
 
     from FeatureSelection import wrapper_methods
-    #result.append(wrapper_methods.wrapper_methods(df, X, y))
+    result.append(wrapper_methods.wrapper_methods(df, X, y))
 
     from FeatureSelection import embedded_methods
     result.append(embedded_methods.embedded_methods(df, X, y))

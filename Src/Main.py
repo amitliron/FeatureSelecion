@@ -96,44 +96,9 @@ def load_input():
 
 
 def test_python(df):
-    from sklearn import datasets, linear_model
-    from sklearn.model_selection import cross_val_score
-    from sklearn.model_selection import cross_val_predict
-    from sklearn.ensemble import RandomForestClassifier
-    from sklearn.datasets import make_classification
-    from sklearn.model_selection import train_test_split
-
-    clf = RandomForestClassifier(max_depth=2, random_state=0)
-    lasso = linear_model.Lasso()
-
-    X = df[df.columns[:-1]]
-    y = df[df.columns[-1]]
-
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 42)
-    clf.fit(X_train, y_train)
-    print("CV Score = ", clf.score(X_test,y_test))
-
-    from sklearn.model_selection import KFold
-    kf = KFold(n_splits=2)
-    for train_index, test_index in kf.split(X):
-        X_train, X_test = X.iloc[train_index], X.iloc[test_index]
-        y_train, y_test = y.iloc[train_index], y.iloc[test_index]
-        clf.fit(X_train, y_train)
-        print("K-FOLD Score = ", clf.score(X_test, y_test))
-
-    print(cross_val_score(clf, X, y, cv=2))
-    print("")
-    res = cross_val_predict(clf, X, y, cv=2)
-    print(res)
-    index = 0
-    # for y1 in res:
-    #     if y1 == y[index]:
-    #         print("no: ", index, " y = ", y1)
-    #         break
-    #     index = index + 1
-
-    None
-
+    from SklearnTests import SklearnTests
+    #SklearnTests.test_score_validate_function(df)
+    SklearnTests.test_pipeline(df)
 
 def main():
     df = load_input()

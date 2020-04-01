@@ -98,7 +98,8 @@ def load_input():
 def test_python(df):
     from SklearnTests import SklearnTests
     #SklearnTests.test_score_validate_function(df)
-    SklearnTests.test_pipeline(df)
+    #SklearnTests.test_pipeline(df)
+    SklearnTests.test_custome_filter(df)
 
 def main():
     df = load_input()

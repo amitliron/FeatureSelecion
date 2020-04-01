@@ -2,6 +2,29 @@ import pandas as pd
 import numpy as np
 
 
+def test_custome_filter(df):
+
+    from FeatureSelection import CustomeHybridFilter
+
+    X = df[df.columns[:-1]]
+    y = df[df.columns[-1]]
+
+    from sklearn.svm import SVC
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.pipeline import Pipeline
+    from sklearn.model_selection import train_test_split
+    from sklearn.model_selection import GridSearchCV
+    from sklearn.linear_model import Lasso, LogisticRegression
+    from sklearn.feature_selection import SelectFromModel
+
+    steps = [('scaler', StandardScaler()),
+             ('CustomeHybridFilter', CustomeHybridFilter.CustomeHybridFilter()),
+             ]
+    pipeline = Pipeline(steps)  # define the pipeline object.
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=30, stratify=y)
+
+    pipeline.fit(X_train, y_train)
+    print("pipeline score: ", pipeline.score(X_test, y_test))
 
 
 def test_score_validate_function(df):
@@ -51,7 +74,6 @@ def test_pipeline(df):
              ('FeatureSelection', SelectFromModel(LogisticRegression(penalty='l1', solver='liblinear'))),
              ('SVM', SVC())]
     pipeline = Pipeline(steps)  # define the pipeline object.
-#penalty='l1'
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=30, stratify=y)
 
     parameteres = {'SVM__C': [0.001, 10e5],

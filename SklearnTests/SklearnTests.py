@@ -2,6 +2,36 @@ import pandas as pd
 import numpy as np
 
 
+def test_pca(df):
+
+    X = df[df.columns[:-1]]
+    y = df[df.columns[-1]]
+
+    from sklearn.decomposition import PCA
+    #pca = PCA(n_components=2)
+    pca = PCA(n_components  = 'mle', svd_solver = 'full')
+    post_pca_array = pca.fit_transform(X)
+    #print("PCA, components = ", pca.components_)
+    print("PCA, shape = ", post_pca_array.shape)
+
+    n_pcs = pca.components_.shape[0]
+    print("PCA, components = ", n_pcs)
+
+    initial_feature_names = df.columns[0:-1]
+    print("Original Colums = ", initial_feature_names)
+    most_important_index = [np.abs(pca.components_[i]).argmax() for i in range(n_pcs)]
+    most_important_names = [initial_feature_names[most_important_index[i]] for i in range(n_pcs)]
+    print("PCA, most_important_index = ", most_important_index)
+    print("PCA, most_important_names = ", most_important_names)
+
+    # using LIST COMPREHENSION HERE AGAIN
+    dic = {'PC{}'.format(i + 1): most_important[i] for i in range(n_pcs)}
+
+    # build the dataframe
+    df = pd.DataFrame(sorted(dic.items()))
+    print(df)
+    None
+
 def test_custome_filter(df):
 
     from FeatureSelection import CustomeHybridFilter

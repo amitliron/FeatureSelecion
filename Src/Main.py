@@ -21,10 +21,7 @@ def handle_empty_values(df):
                 print("TBD")
 
 
-def handle_variance (df):
-    print("[ERROR] handle_variance - not implemented yet")
-    #print(df.var())
-    None
+
 
 def remove_text_from_input(df):
     for column in df:
@@ -37,8 +34,11 @@ def label_encoder(df):
     None
 
 def feature_scaling(df):
+    y = df.iloc[:,-1]
+    target_name = df.columns[-1]
     from FeatureScaling import feature_scaling
-    df = feature_scaling.scale(df, standardize=False)
+    df = feature_scaling.scale(df.iloc[:,0:-1], standardize=False)
+    df[target_name] = y
     return df
 
 def feature_selection(df):
@@ -50,8 +50,7 @@ def preprocessing(df):
     handle_empty_values(df)
     label_encoder(df)
     remove_text_from_input(df)
-    return test_python(df)
-    handle_variance(df)
+    #return test_python(df)
     df = feature_scaling(df)
     feature_selection(df)
 
@@ -90,8 +89,12 @@ def create_classifier(classifier_name):
 def load_input():
     import os
     #file = os.getcwd() + '../Dataset/nba_logreg.csv'
-    file = './../Dataset/nba_logreg.csv'
-    df = pd.read_csv(file)
+    #file = './../Dataset/nba_logreg.csv'
+    file = 'winequality-white.csv'
+    file = os.getcwd() + '/../Dataset/' + 'winequality-white.csv'
+    df = pd.read_csv(file, sep=";")
+    print("Colums = ", df.columns.names)
+    print("Head(3) = \n", df.head(3))
     return df
 
 

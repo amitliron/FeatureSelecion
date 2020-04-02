@@ -85,18 +85,23 @@ def feature_selection(df):
 
     result = []
 
-    from FeatureSelection import filter_methods
-    result.append(filter_methods.filter_methods(df, X, y))
+    from Configuration import Configurations as config
 
-    from FeatureSelection import wrapper_methods
-    #result.append(wrapper_methods.wrapper_methods(df, X, y))
+    if config.filter_method==True:
+        from FeatureSelection import filter_methods
+        result.append(filter_methods.filter_methods(df, X, y))
 
-    from FeatureSelection import embedded_methods
-    result.append(embedded_methods.embedded_methods(df, X, y))
+    if config.embedded_method == True:
+        from FeatureSelection import wrapper_methods
+        result.append(wrapper_methods.wrapper_methods(df, X, y))
 
-    from FeatureSelection import hybrid_methods
-    #res = hybrid_methods.hybrid_methods()
-    #result.append(res)
+    if config.embedded_method == True:
+        from FeatureSelection import embedded_methods
+        result.append(embedded_methods.embedded_methods(df, X, y))
+
+    if config.hybrid_method:
+        from FeatureSelection import hybrid_methods
+        result.append(hybrid_methods.hybrid_methods())
 
     from FeatureSelection import genetic_algorithms_methods
     #res = genetic_algorithms_methods.genetic_algorithms_methods(df, X, y)

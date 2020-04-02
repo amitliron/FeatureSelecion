@@ -24,12 +24,6 @@ def test_pca(df):
     print("PCA, most_important_index = ", most_important_index)
     print("PCA, most_important_names = ", most_important_names)
 
-    # using LIST COMPREHENSION HERE AGAIN
-    dic = {'PC{}'.format(i + 1): most_important[i] for i in range(n_pcs)}
-
-    # build the dataframe
-    df = pd.DataFrame(sorted(dic.items()))
-    print(df)
     None
 
 def test_custome_filter(df):

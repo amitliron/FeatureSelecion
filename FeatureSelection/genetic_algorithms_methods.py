@@ -30,4 +30,7 @@ def genetic_algorithms_methods(df, X, y):
 
     # print the results.
     print("GeneticSelection: ", selection.support_)
-    None
+
+    res = []
+    res.append(('genetic', 'GeneticSelectionCV', selection.support_))
+    return res

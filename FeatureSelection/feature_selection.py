@@ -43,8 +43,8 @@ def plot_selection_result(lst, df):
     plot_df = pd.DataFrame(dict, index=[0])
     plot_df.rename(index={0: "COUNT"}, inplace=True)
     df1_transposed = plot_df.T
-    print(df1_transposed)
-    df1_transposed.plot(kind='hist')
+    #print(df1_transposed)
+    #df1_transposed.plot(kind='hist')
     plt.figure(1)
     plt.xlabel("num of chosses")
     plt.ylabel("features")
@@ -74,7 +74,7 @@ def print_feature_selection_result(lst):
             method_name = res[1]
             features_names = res[2]
             features_names = [(el.strip()) for el in features_names]
-            print(method_type, ",", method_name,",", features_names)
+            print("\n",method_type, ",", method_name,":\n", features_names)
 
 
 
@@ -85,27 +85,29 @@ def feature_selection(df):
 
     result = []
 
-    from Configuration import Configurations as config
+    import configparser
+    config = configparser.ConfigParser()
+    config.read('../Configuration/Configuration.ini')
 
-    if config.filter_method==True:
+    if config['Feature Selection']['filter_method']=="True":
         from FeatureSelection import filter_methods
         result.append(filter_methods.filter_methods(df, X, y))
 
-    if config.embedded_method == True:
+    if config['Feature Selection']['wrapper_method'] == "True":
         from FeatureSelection import wrapper_methods
         result.append(wrapper_methods.wrapper_methods(df, X, y))
 
-    if config.embedded_method == True:
+    if config['Feature Selection']['embedded_method'] == "True":
         from FeatureSelection import embedded_methods
         result.append(embedded_methods.embedded_methods(df, X, y))
 
-    if config.hybrid_method:
+    if config['Feature Selection']['hybrid_method'] == "True":
         from FeatureSelection import hybrid_methods
-        result.append(hybrid_methods.hybrid_methods())
+        result.append(hybrid_methods.hybrid_methods(df, X, y))
 
-    from FeatureSelection import genetic_algorithms_methods
-    #res = genetic_algorithms_methods.genetic_algorithms_methods(df, X, y)
-    # result.append(res)
+    if config['Feature Selection']['genetic_method'] == "True":
+        from FeatureSelection import genetic_algorithms_methods
+        result.append(genetic_algorithms_methods.genetic_algorithms_methods(df, X, y))
 
     print_feature_selection_result(result)
     plot_selection_result(result, df)

@@ -11,7 +11,7 @@ def correlation_between_features_and_target(df, min_threshold=0.3, show_plot=Fal
 
     # print coraltion
     corrlation = df.drop(target_label, axis=1).apply(lambda x: x.corr(df[target_label]))
-    print(corrlation)
+    #print(corrlation)
     feature_names = list(df.columns.values)
 
     # show graph

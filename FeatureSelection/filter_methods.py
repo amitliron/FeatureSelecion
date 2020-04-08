@@ -5,6 +5,30 @@ import numpy as np
     SelectKBest - require K as input
 '''
 
+def kolmogorov_smirnov(df, X, y, min_threshold=0.3):
+    from scipy.stats import kstest
+    from scipy.stats import ks_2samp
+
+    b = y
+    for i in range(0, len(X.columns)):
+        a = X.iloc[:, i]
+        res = ks_2samp(a, b)
+        print(res)
+    None
+
+
+def mutal_information_between_features_and_target(df, X, y, min_threshold=0.3, show_plot=False):
+    from sklearn.feature_selection import mutual_info_classif
+    mi_res = mutual_info_classif(X, y)
+
+    lst = []
+    for i in range(len(mi_res)):
+        if mi_res[i] >= min_threshold:
+            lst.append(df.columns[i])
+
+    return lst
+
+
 def correlation_between_features_and_target(df, min_threshold=0.3, show_plot=False):
 
     target_label = df.columns[-1]
@@ -27,7 +51,7 @@ def correlation_between_features_and_target(df, min_threshold=0.3, show_plot=Fal
     # return sublist
     lst = []
     for i in range(len(corrlation)):
-        if corrlation[i] >= min_threshold:
+        if abs(corrlation[i]) >= min_threshold:
             lst.append(feature_names[i])
 
     return lst
@@ -51,9 +75,12 @@ def correlation_between_features_to_them_self(df, max_threshold=0.3):
 
 
 def filter_methods(df, X, y):
-    res1 = correlation_between_features_and_target(df)
-    res2 = correlation_between_features_to_them_self(df)
+    #kolmogorov_smirnov(df, X, y)
+    res1 = mutal_information_between_features_and_target(df, X=X, y=y, min_threshold=0.3)
+    res2 = correlation_between_features_and_target(df, min_threshold=0.3)
+    res3 = correlation_between_features_to_them_self(df, max_threshold=0.4)
     res = []
-    res.append(('filter', 'correlation\nbetween\nfeatures\nand\ntarget', res1))
-    res.append(('filter', 'correlation\nbetween\nfeatures\nto_them\nself', res2))
+    res.append(('filter', 'MI\nbetween\nfeatures\nand\ntarget', res1))
+    res.append(('filter', 'correlation\nbetween\nfeatures\nand\ntarget', res2))
+    res.append(('filter', 'correlation\nbetween\nfeatures\nto_them\nself', res3))
     return res

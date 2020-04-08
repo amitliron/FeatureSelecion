@@ -87,6 +87,11 @@ def create_classifier(classifier_name):
 
 
 def load_input():
+
+    from Dataset import CreateRandomDataset as cd
+    df = cd.generate_dataset()
+    return df
+
     import os
     #file = os.getcwd() + '../Dataset/nba_logreg.csv'
     #file = './../Dataset/nba_logreg.csv'

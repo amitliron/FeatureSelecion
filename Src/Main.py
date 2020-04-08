@@ -88,18 +88,56 @@ def create_classifier(classifier_name):
 
 def load_input():
 
-    from Dataset import CreateRandomDataset as cd
-    df = cd.generate_dataset()
-    return df
+
+    import configparser
+    config = configparser.ConfigParser()
+    config.read('../Configuration/Configuration.ini')
+
+    if config['Dataset']['random'] == "True":
+        from Dataset import CreateRandomDataset as cd
+        df = cd.generate_dataset()
+        return df
+
+    if config['Dataset']['iris'] == "True":
+        from sklearn import datasets
+        samples = datasets.load_iris()
+        X = samples.data
+        y = samples.target
+        df = pd.DataFrame(data=X)
+        df.columns = samples.feature_names
+        df['Target'] = y
+        return df
+
+    if config['Dataset']['breast_cancer'] == "True":
+        from sklearn import datasets
+        samples = datasets.load_breast_cancer()
+        X = samples.data
+        y = samples.target
+        df = pd.DataFrame(data=X)
+        df.columns = samples.feature_names
+        df['Target'] = y
+        return df
+
+    if config['Dataset']['nba'] == "True":
+        file = 'winequality-white.csv'
+
+    if config['Dataset']['wine'] == "True":
+        from sklearn import datasets
+        samples = datasets.load_wine()
+        X = samples.data
+        y = samples.target
+        df = pd.DataFrame(data=X)
+        df.columns = samples.feature_names
+        df['Target'] = y
+        return df
+        #file = 'winequality-white.csv'
+
+    if config['Dataset']['sonar'] == "True":
+        file = 'sonar.all-data.csv'
 
     import os
-    #file = os.getcwd() + '../Dataset/nba_logreg.csv'
-    #file = './../Dataset/nba_logreg.csv'
-    file = 'winequality-white.csv'
-    file = os.getcwd() + '/../Dataset/' + 'winequality-white.csv'
-    df = pd.read_csv(file, sep=";")
-    print("Colums = ", df.columns.names)
-    print("Head(3) = \n", df.head(3))
+    full_location = os.getcwd() + '/../Dataset/' + file
+    df = pd.read_csv(full_location, sep=";")
     return df
 
 

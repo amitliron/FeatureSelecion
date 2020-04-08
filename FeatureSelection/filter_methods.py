@@ -76,8 +76,8 @@ def correlation_between_features_to_them_self(df, max_threshold=0.3):
 
 def filter_methods(df, X, y):
     #kolmogorov_smirnov(df, X, y)
-    res1 = mutal_information_between_features_and_target(df, X=X, y=y, min_threshold=0.3)
-    res2 = correlation_between_features_and_target(df, min_threshold=0.3)
+    res1 = mutal_information_between_features_and_target(df, X=X, y=y, min_threshold=0.2)
+    res2 = correlation_between_features_and_target(df, min_threshold=0.6)
     res3 = correlation_between_features_to_them_self(df, max_threshold=0.4)
     res = []
     res.append(('filter', 'MI\nbetween\nfeatures\nand\ntarget', res1))

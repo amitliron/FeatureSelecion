@@ -34,12 +34,13 @@ def lasso(df, X, y):
     x_train = X
     y_train = y
 
+    # using logistic regression with penalty l1.
     from sklearn.linear_model import Lasso, LogisticRegression
     from sklearn.feature_selection import SelectFromModel
-
-    # using logistic regression with penalty l1.
-    selection = SelectFromModel(LogisticRegression(C=1, penalty='l1', solver='liblinear'))
+    estimator = LogisticRegression(C=1, penalty='l1', solver='liblinear')
+    selection = SelectFromModel(estimator)
     selection.fit(x_train, y_train)
+    #print(selection.estimator_.score(x_train, y_train))
 
     # see the selected features.
     selected_features = x_train.columns[(selection.get_support())]

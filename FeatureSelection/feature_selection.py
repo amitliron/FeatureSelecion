@@ -36,9 +36,38 @@ def plot_selection_result(lst, df):
     for feature in all_features_names:
         if feature not in dict:
             dict[feature] = 1
+        if feature not in full_dict:
+            full_dict[feature] = []
+
+
+    dfPlot = pd.DataFrame()
+    for list_methods in lst:
+        for res in list_methods:
+            method_name = res[1]
+            features_names = res[2]
+            selected_features_names = [(el.strip()) for el in features_names]
+            for selected_feature in selected_features_names:
+                dfPlot.at[method_name,selected_feature] =  1
+
 
     '''
-        FIRST FIGURE
+        dict:       key   =  feature
+                    value =  count
+                    
+        full_dict   key   = feature
+                    value = list(algs)    
+                    
+                    
+        dfPlot:
+                  columns: features
+                  rows:    methods               
+    
+    '''
+
+    '''
+        FIRST FIGURE 
+        Histogram
+        features -> counter
     '''
     plot_df = pd.DataFrame(dict, index=[0])
     plot_df.rename(index={0: "COUNT"}, inplace=True)
@@ -55,6 +84,10 @@ def plot_selection_result(lst, df):
 
     '''
         SECOND FIGURE
+        Features - > Alg Selected
+        
+        X: Features
+        Y: Methods
     '''
 
     from sklearn.preprocessing import MultiLabelBinarizer
@@ -65,6 +98,24 @@ def plot_selection_result(lst, df):
     plt.scatter(*np.where(plot_df_methods_names)[::-1])
     plt.xticks(range(plot_df_methods_names.shape[1]), plot_df_methods_names.columns)
     plt.yticks(range(plot_df_methods_names.shape[0]), plot_df_methods_names.index)
+
+
+    '''
+        Third Figure
+        
+        X: Features
+        Y: Methods (all of them)
+    
+    '''
+
+    plt.figure(3)
+    dfPlot.fillna(value=0, inplace=True)
+    plt.scatter(*np.where(dfPlot)[::-1])
+    plt.xticks(range(dfPlot.shape[1]), dfPlot.columns)
+    plt.yticks(range(dfPlot.shape[0]), dfPlot.index)
+
+
+    # show all plot
     plt.show()
 
 def print_feature_selection_result(lst):

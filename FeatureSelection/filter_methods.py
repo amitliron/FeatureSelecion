@@ -74,13 +74,39 @@ def correlation_between_features_to_them_self(df, max_threshold=0.3):
     return lst
 
 
+def use_select_k_best(func, df, X, y, min_threshold=0.3):
+
+    from sklearn.feature_selection import SelectKBest
+    selector = SelectKBest(func, k='all').fit(X, y)
+    res = selector.transform(X)
+    feature_names = list(X.columns.values)
+    lst = []
+    for i in range(len(selector.scores_)):
+        if abs(selector.scores_[i]) >= min_threshold:
+            lst.append(feature_names[i])
+
+    print(selector.scores_)
+    return lst
+
+
 def filter_methods(df, X, y):
+    from sklearn.feature_selection import chi2
+    from sklearn.feature_selection import f_classif
+    from sklearn.feature_selection import mutual_info_classif
+
     #kolmogorov_smirnov(df, X, y)
     res1 = mutal_information_between_features_and_target(df, X=X, y=y, min_threshold=0.2)
     res2 = correlation_between_features_and_target(df, min_threshold=0.6)
     res3 = correlation_between_features_to_them_self(df, max_threshold=0.4)
+    res4 = use_select_k_best(chi2, df, X, y, min_threshold=0.6)
+    res5 = use_select_k_best(f_classif, df, X, y, min_threshold=0.6)
+    res6 = use_select_k_best(mutual_info_classif, df, X, y, min_threshold=0.6)
+
     res = []
-    res.append(('filter', 'MI\nbetween\nfeatures\nand\ntarget', res1))
-    res.append(('filter', 'correlation\nbetween\nfeatures\nand\ntarget', res2))
-    res.append(('filter', 'correlation\nbetween\nfeatures\nto_them\nself', res3))
+    #res.append(('filter', 'MI\nbetween\nfeatures\nand\ntarget', res1))
+    #res.append(('filter', 'correlation\nbetween\nfeatures\nand\ntarget', res2))
+    #res.append(('filter', 'correlation\nbetween\nfeatures\nto_them\nself', res3))
+    res.append(('filter', 'chi2', res4))
+    res.append(('filter', 'ANOVA ', res5))
+    res.append(('filter', 'Mutual information', res6))
     return res

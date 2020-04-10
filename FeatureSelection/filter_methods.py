@@ -77,16 +77,23 @@ def correlation_between_features_to_them_self(df, max_threshold=0.3):
 def use_select_k_best(func, df, X, y, min_threshold=0.3):
 
     from sklearn.feature_selection import SelectKBest
+    from sklearn.feature_selection import SelectPercentile
     selector = SelectKBest(func, k='all').fit(X, y)
+    selector = SelectPercentile(func, percentile=90).fit(X, y)
     res = selector.transform(X)
-    feature_names = list(X.columns.values)
-    lst = []
-    for i in range(len(selector.scores_)):
-        if abs(selector.scores_[i]) >= min_threshold:
-            lst.append(feature_names[i])
 
-    print(selector.scores_)
-    return lst
+    support = np.asarray(selector.get_support())
+    columns_with_support = X.columns[support]
+
+    # feature_names = list(X.columns.values)
+    #lst = []
+    # for i in range(len(selector.scores_)):
+    #     if abs(selector.scores_[i]) >= min_threshold:
+    #         lst.append(feature_names[i])
+    #
+    # print(selector.scores_)
+    #return lst
+    return list(columns_with_support)
 
 
 def filter_methods(df, X, y):

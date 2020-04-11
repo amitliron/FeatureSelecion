@@ -142,6 +142,10 @@ def feature_selection(df):
     config = configparser.ConfigParser()
     config.read('../Configuration/Configuration.ini')
 
+    if config['Feature Selection']['remove_low_variance'] == "True":
+        from FeatureSelection import filter_methods
+        result.append(filter_methods.remove_low_variance(df, X, y))
+
     if config['Feature Selection']['filter_method']=="True":
         from FeatureSelection import filter_methods
         result.append(filter_methods.filter_methods(df, X, y))

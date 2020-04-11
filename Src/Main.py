@@ -37,7 +37,7 @@ def feature_scaling(df):
     y = df.iloc[:,-1]
     target_name = df.columns[-1]
     from FeatureScaling import feature_scaling
-    df = feature_scaling.scale(df.iloc[:,0:-1], standardize=False)
+    df = feature_scaling.scale(df.iloc[:,0:-1])
     df[target_name] = y
     return df
 
@@ -45,14 +45,25 @@ def feature_selection(df):
     from FeatureSelection import feature_selection
     feature_selection.feature_selection(df)
 
-
 def preprocessing(df):
+
+    print_statistics(df)
     handle_empty_values(df)
     label_encoder(df)
     remove_text_from_input(df)
-    #return test_python(df)
     df = feature_scaling(df)
     feature_selection(df)
+
+
+def print_statistics(df):
+    X = df[df.columns[:-1]]
+    X = X.values
+    for col in range(X.shape[1]):
+        mean = X[:, col].mean()
+        var = X[:, col].var()
+        ratio = var / mean
+        print("Column: ", df.columns[col]," Mean: ", mean, " var = ", var, " var/mean: ", ratio)
+    print("")
 
 def run_model(df):
 

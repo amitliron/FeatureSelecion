@@ -74,7 +74,7 @@ def correlation_between_features_to_them_self(df, max_threshold=0.3):
     return lst
 
 
-def use_select_k_best(func, df, X, y, min_threshold=0.3):
+def use_select_k_best(func, df, X, y):
 
     from sklearn.feature_selection import SelectKBest
     from sklearn.feature_selection import SelectPercentile
@@ -95,19 +95,47 @@ def use_select_k_best(func, df, X, y, min_threshold=0.3):
     #return lst
     return list(columns_with_support)
 
+def remove_low_variance(df, X, y):
+
+    # convert ti ndarray
+    #X = X.values
+
+    '''
+        var[x] = p(1-p)
+    '''
+
+    from sklearn.feature_selection import VarianceThreshold
+    sel = VarianceThreshold(threshold=(.8 * (1 - .8)))
+
+    # for col in range(X.shape[1]):
+    #     mean = X[:, col].mean()
+    #     var = X[:, col].var()
+    #     ratio = var / mean
+    #     print("Mean: ", mean, " var = ", var, " rate: ", ratio)
+
+    sel.fit(X)
+    support = np.asarray(sel.get_support())
+    columns_with_support = X.columns[support]
+
+    return list(columns_with_support)
+
 
 def filter_methods(df, X, y):
     from sklearn.feature_selection import chi2
     from sklearn.feature_selection import f_classif
     from sklearn.feature_selection import mutual_info_classif
 
+    res7 = remove_low_variance(df, X, y)
+
     #kolmogorov_smirnov(df, X, y)
     res1 = mutal_information_between_features_and_target(df, X=X, y=y, min_threshold=0.2)
     res2 = correlation_between_features_and_target(df, min_threshold=0.6)
     res3 = correlation_between_features_to_them_self(df, max_threshold=0.4)
-    res4 = use_select_k_best(chi2, df, X, y, min_threshold=0.6)
-    res5 = use_select_k_best(f_classif, df, X, y, min_threshold=0.6)
-    res6 = use_select_k_best(mutual_info_classif, df, X, y, min_threshold=0.6)
+
+    res4 = use_select_k_best(chi2, df, X, y)
+    res5 = use_select_k_best(f_classif, df, X, y)
+    res6 = use_select_k_best(mutual_info_classif, df, X, y)
+
 
     res = []
     #res.append(('filter', 'MI\nbetween\nfeatures\nand\ntarget', res1))

@@ -111,3 +111,33 @@ def test_pipeline(df):
 
 
     None
+
+
+def test_VarianceThreshold():
+
+    from sklearn import datasets
+    from sklearn.feature_selection import VarianceThreshold
+    import pandas as pds
+    import numpy as np
+
+    samples = datasets.load_iris()
+    X = samples.data
+    sel = VarianceThreshold(threshold=(.8 * (1 - .8)))
+
+    for col in range(X.shape[1]):
+        mean = X[:,col].mean()
+        var = X[:,col].var()
+        ratio = var/mean
+        print("Mean: ", mean, " var = ", var, " rate: ", ratio)
+
+    sel.fit(X)
+    print(sel.get_support())
+
+    None
+
+def main():
+    test_VarianceThreshold()
+
+
+if __name__ == "__main__":
+    main()

@@ -78,15 +78,22 @@ def run_model(df):
         classifier.fit(X, y)
         scores_result[type(classifier).__name__ ] = classifier.score(X_test, y_test)
 
+    max_predict_value = max(scores_result.values())
+    min_predict_value = min(scores_result.values())
+
     import matplotlib.pylab as plt
     fig, ax = plt.subplots()
     lists = sorted(scores_result.items())
     classifier_name, classifier_score = zip(*lists)
-    plt.bar(classifier_name, classifier_score)
+    barlist = plt.bar(classifier_name, classifier_score)
     plt.title("Dataset: " + df.index.name)
     for i, v in enumerate(classifier_score):
         txt = "{:.2f}".format(v)
         plt.text(i, v-0.05, txt, color='blue', va='center', fontweight='bold')
+        if v == max_predict_value:
+            barlist[i].set_color('g')
+        elif v == min_predict_value:
+            barlist[i].set_color('r')
     plt.show()
 
 

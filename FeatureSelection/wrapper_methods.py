@@ -33,7 +33,7 @@ def rfecv(df, X, y, plot_graph=True):
     return features
 
 
-def forward_backward_selection(df, X, y, forward=True):
+def forward_backward_selection(df, X, y, forward=True, floating=False):
 
     from mlxtend.feature_selection import SequentialFeatureSelector
     from sklearn.ensemble import RandomForestClassifier
@@ -41,7 +41,7 @@ def forward_backward_selection(df, X, y, forward=True):
     sfs = SequentialFeatureSelector(RandomForestClassifier(),
                                     k_features="best",
                                     forward=forward,
-                                    floating=False,
+                                    floating=floating,
                                     scoring='accuracy',
                                     cv=2,
                                     n_jobs=-1)
@@ -62,9 +62,25 @@ def forward_backward_selection(df, X, y, forward=True):
 def wrapper_methods(df, X, y):
     list1 = forward_backward_selection(df, X, y, forward=True)
     list2 = forward_backward_selection(df, X, y, forward=False)
-    list3 = rfecv(df, X, y, plot_graph=False)
+    list3 = forward_backward_selection(df, X, y, forward=True)
+    list4 = forward_backward_selection(df, X, y, forward=True)
+    list5 = rfecv(df, X, y, plot_graph=False)
     res = []
     res.append(('wrapper', 'forward selection', list1))
     res.append(('wrapper', 'backward selection', list2))
-    res.append(('wrapper', 'RFECV', list3))
+    res.append(('wrapper', 'step floating FS', list3))
+    res.append(('wrapper', 'step floating BS', list4))
+    res.append(('wrapper', 'RFECV', list5))
+
+    # REFCV
+    # Recursive Feature Elimination CV
+    # 1. run model (RF)
+    # 2. remove least importance feature and run again
+    # 3. if score decrease -> save this feature
+
+    # Step floating forward selection
+    # 1. select best feature
+    # 2. select worst
+    # 3. check if score improve or decrease by deleting worst feature
+
     return res

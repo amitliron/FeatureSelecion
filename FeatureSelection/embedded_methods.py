@@ -1,5 +1,19 @@
 import pandas as pd
 
+
+
+'''
+    embedded -> 2 methods:
+        1. regularization
+        2. tree base
+
+
+    L1 regularization        - > reduce coefficients  to zero
+    L2 regularization        - > coefficients approaching zero
+    L1/L2 regularization     - > combination of the L1 and L2  
+    
+'''
+
 def random_forest(df, X, y):
 
     x_train = X
@@ -54,5 +68,5 @@ def embedded_methods(df, X, y):
 
     lst = []
     lst.append(('embedded', 'lasso', lst1))
-    lst.append(('embedded', 'random\nforest', lst2))
+    lst.append(('embedded', 'RF', lst2))
     return lst

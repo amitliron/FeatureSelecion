@@ -71,27 +71,76 @@ def run_model(df):
     X = df[df.columns[:-1]]
     y = df[df.columns[-1]]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3)
-    classifier = create_classifier('')
-    classifier.fit(X, y)
-    #predictions = model.predict(X_test)
-    print("Model: " + type(classifier).__name__ + " Score: " + str(classifier.score(X_test, y_test)))
-    None
+    classifier_list = get_classifiers_list()
+    scores_result = {}
+    for classifier_name in classifier_list:
+        classifier = create_classifier(classifier_name)
+        classifier.fit(X, y)
+        scores_result[type(classifier).__name__ ] = classifier.score(X_test, y_test)
 
-def create_classifier(classifier_name):
-    from sklearn.ensemble import RandomForestClassifier
-    classifier = RandomForestClassifier()
+    import matplotlib.pylab as plt
+    fig, ax = plt.subplots()
+    lists = sorted(scores_result.items())
+    classifier_name, classifier_score = zip(*lists)
+    plt.bar(classifier_name, classifier_score)
+    plt.title("Dataset: " + df.index.name)
+    for i, v in enumerate(classifier_score):
+        txt = "{:.2f}".format(v)
+        plt.text(i, v-0.05, txt, color='blue', va='center', fontweight='bold')
+    plt.show()
 
-    from sklearn.neighbors import KNeighborsClassifier
-    classifier = KNeighborsClassifier(n_neighbors=5)
 
-    from sklearn import svm
-    classifier = svm.SVC()
+def get_classifiers_list():
 
-    from sklearn.tree import DecisionTreeClassifier
-    classifier = DecisionTreeClassifier()
+    import configparser
+    config = configparser.ConfigParser()
+    config.read('../Configuration/Configuration.ini')
 
-    from sklearn.naive_bayes import GaussianNB
-    classifier = GaussianNB()
+    res = []
+    if config['Classifier']['random_forest'] == "True":
+        res.append('random_forest')
+
+    if config['Classifier']['k_neighbors'] == "True":
+        res.append('k_neighbors')
+
+    if config['Classifier']['svm'] == "True":
+        res.append('svm')
+
+    if config['Classifier']['naive_bayes'] == "True":
+        res.append('naive_bayes')
+
+    if config['Classifier']['logistic_regression'] == "True":
+        res.append('logistic_regression')
+
+    return res
+
+
+def create_classifier(classifier_name = None):
+
+    import configparser
+    config = configparser.ConfigParser()
+    config.read('../Configuration/Configuration.ini')
+
+    classifier = None
+    if classifier_name=='random_forest':
+        from sklearn.ensemble import RandomForestClassifier
+        classifier = RandomForestClassifier()
+
+    if classifier_name=='k_neighbors':
+        from sklearn.neighbors import KNeighborsClassifier
+        classifier = KNeighborsClassifier(n_neighbors=5)
+
+    if classifier_name=='svm':
+        from sklearn import svm
+        classifier = svm.SVC()
+
+    if classifier_name=='naive_bayes':
+        from sklearn.naive_bayes import GaussianNB
+        classifier = GaussianNB()
+
+    if classifier_name=='logistic_regression':
+        from sklearn.linear_model import LogisticRegression
+        classifier = LogisticRegression(solver='lbfgs')
 
     return classifier
 
@@ -107,6 +156,7 @@ def load_input():
     if config['Dataset']['random'] == "True":
         from Dataset import CreateRandomDataset as cd
         df = cd.generate_dataset()
+        df.index.name = "Random"
         return df
 
     if config['Dataset']['iris'] == "True":
@@ -117,6 +167,7 @@ def load_input():
         df = pd.DataFrame(data=X)
         df.columns = samples.feature_names
         df['Target'] = y
+        df.index.name = "Iris"
         return df
 
     if config['Dataset']['breast_cancer'] == "True":
@@ -127,6 +178,7 @@ def load_input():
         df = pd.DataFrame(data=X)
         df.columns = samples.feature_names
         df['Target'] = y
+        df.index.name = "breast cancer"
         return df
 
     if config['Dataset']['nba'] == "True":
@@ -140,8 +192,8 @@ def load_input():
         df = pd.DataFrame(data=X)
         df.columns = samples.feature_names
         df['Target'] = y
+        df.index.name = "Wine"
         return df
-        #file = 'winequality-white.csv'
 
     if config['Dataset']['sonar'] == "True":
         file = 'sonar.all-data.csv'
@@ -161,8 +213,8 @@ def test_python(df):
 
 def main():
     df = load_input()
-    preprocessing(df)
-    #run_model(df, target_column_name)
+    #preprocessing(df)
+    run_model(df)
 
 
 if __name__ == "__main__":

@@ -86,7 +86,8 @@ def run_model(df):
     lists = sorted(scores_result.items())
     classifier_name, classifier_score = zip(*lists)
     barlist = plt.bar(classifier_name, classifier_score)
-    plt.title("Dataset: " + df.index.name)
+    if df.index.name is not None:
+        plt.title("Dataset: " + df.index.name)
     for i, v in enumerate(classifier_score):
         txt = "{:.2f}".format(v)
         plt.text(i, v-0.05, txt, color='blue', va='center', fontweight='bold')

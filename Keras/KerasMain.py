@@ -36,12 +36,33 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 from keras.utils import to_categorical
-
-
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.optimizers import SGD,Adam
+from sklearn.preprocessing import LabelEncoder
 #os.chdir('/Users/akashsrivastava/Desktop/MachineLearning/kaggle/iris-keras')
 
 
 from sklearn import datasets
+
+def run_model(X_train, X_test, y_train, y_test):
+    encoder = LabelEncoder()
+    y_train = encoder.fit_transform(y_train)
+    y_train = pd.get_dummies(y_train).values
+    y_test = encoder.fit_transform(y_test)
+    y_test = pd.get_dummies(y_test).values
+
+    model = Sequential()
+    model.add(Dense(10, input_shape=(4,), activation='tanh'))
+    model.add(Dense(8, activation='tanh'))
+    model.add(Dense(6, activation='tanh'))
+    model.add(Dense(3, activation='softmax'))
+
+    model.compile(Adam(lr=0.04), 'categorical_crossentropy', metrics=['accuracy'])
+    model.fit(X_train, y_train, epochs=10,verbose=False)
+    #y_pred = model.predict(X_test)
+    score, acc = model.evaluate(X_test, y_test)#, batch_size=batch_size)
+    return acc
 
 samples = datasets.load_iris()
 X = samples.data
@@ -61,7 +82,7 @@ dataset = df #pd.read_csv('../input/Iris.csv')
 #X = dataset.iloc[:,1:5].values
 #y = dataset.iloc[:,5].values
 
-from sklearn.preprocessing import LabelEncoder
+
 encoder =  LabelEncoder()
 y1 = encoder.fit_transform(y)
 
@@ -72,9 +93,7 @@ from sklearn.model_selection import train_test_split
 X_train,X_test, y_train,y_test = train_test_split(X,Y,test_size=0.2,random_state=0)
 #Defining the model
 
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.optimizers import SGD,Adam
+
 
 
 model = Sequential()

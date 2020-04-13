@@ -78,6 +78,10 @@ def run_model(df):
         classifier.fit(X, y)
         scores_result[type(classifier).__name__ ] = classifier.score(X_test, y_test)
 
+    from Keras import KerasMain
+    score = KerasMain.run_model(X_train, X_test, y_train, y_test)
+    scores_result["keras"] = score
+
     max_predict_value = max(scores_result.values())
     min_predict_value = min(scores_result.values())
 
@@ -189,9 +193,6 @@ def load_input():
         df.index.name = "breast cancer"
         return df
 
-    if config['Dataset']['nba'] == "True":
-        file = 'winequality-white.csv'
-
     if config['Dataset']['wine'] == "True":
         from sklearn import datasets
         samples = datasets.load_wine()
@@ -203,12 +204,29 @@ def load_input():
         df.index.name = "Wine"
         return df
 
+    name = "None"
     if config['Dataset']['sonar'] == "True":
         file = 'sonar.all-data.csv'
+        name = 'sonar'
+
+    elif config['Dataset']['diabetes'] == "True":
+        file = 'diabetes.csv'
+        name = 'diabetes'
+        sep = ","
+
+    elif config['Dataset']['nba'] == "True":
+        file = 'winequality-white.csv'
+        name = 'nba'
 
     import os
     full_location = os.getcwd() + '/../Dataset/' + file
-    df = pd.read_csv(full_location, sep=";")
+    df = pd.read_csv(full_location, sep=sep)
+    df.index.name = name
+    print("----------------------")
+    print("shape: ", df.shape)
+    print("dtypes: \n", df.dtypes)
+    print("head: \n", df.head(3))
+    print("----------------------")
     return df
 
 

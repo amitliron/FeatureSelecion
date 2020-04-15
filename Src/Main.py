@@ -83,6 +83,7 @@ def add_deep_learning_prediction(classifier_list, scores_result, df):
     X = df[df.columns[:-1]]
     y = df[df.columns[-1]]
 
+
     # hot encoding
     encoder = LabelEncoder()
     y1 = encoder.fit_transform(y)
@@ -92,16 +93,20 @@ def add_deep_learning_prediction(classifier_list, scores_result, df):
     from sklearn.model_selection import train_test_split
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3)
 
+    # normazlie
+    from sklearn.preprocessing import StandardScaler
+    sc = StandardScaler()
+    X_train = sc.fit_transform(X_train)
+    X_test = sc.transform(X_test)
+
     # build model
     model = Sequential()
     model.add(Dense(81, activation='relu', input_shape = ((df.shape[1]-1),)))
-    # model.add(Dense(81, activation='relu'))
-    # model.add(Dense(40, activation='relu'))
-    # model.add(Dense(40, activation='relu'))
-    # model.add(Dense(40, activation='relu'))
-    # model.add(Dense(9, activation='relu'))
-    # model.add(Dense(9, activation='relu'))
-    model.add(Dropout(0.2))
+
+    model.add(Dropout(0.2, input_shape=(60,)))
+    model.add(Dense(150, activation='relu', input_shape=((df.shape[1] - 1),)))
+    model.add(Dense(150, activation='relu'))
+    model.add(Dense(150, activation='relu'))
     model.add(Dense(y.shape[1], activation='softmax'))
 
 
@@ -110,7 +115,7 @@ def add_deep_learning_prediction(classifier_list, scores_result, df):
     #model.compile(Adam(lr=0.04), 'categorical_crossentropy', metrics=['accuracy'])
 
     # validation_split=0.3
-    model.fit(X_train, y_train)
+    model.fit(X_train, y_train,epochs=120)
     score, acc = model.evaluate(X_test, y_test, verbose=0)
     #model.fit(X_train, y_train)
     #y_pred = model.predict(X_test)

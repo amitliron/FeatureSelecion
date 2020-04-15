@@ -45,24 +45,24 @@ from sklearn.preprocessing import LabelEncoder
 
 from sklearn import datasets
 
-def run_model(X_train, X_test, y_train, y_test):
-    encoder = LabelEncoder()
-    y_train = encoder.fit_transform(y_train)
-    y_train = pd.get_dummies(y_train).values
-    y_test = encoder.fit_transform(y_test)
-    y_test = pd.get_dummies(y_test).values
-
-    model = Sequential()
-    model.add(Dense(10, input_shape=(4,), activation='tanh'))
-    model.add(Dense(8, activation='tanh'))
-    model.add(Dense(6, activation='tanh'))
-    model.add(Dense(3, activation='softmax'))
-
-    model.compile(Adam(lr=0.04), 'categorical_crossentropy', metrics=['accuracy'])
-    model.fit(X_train, y_train, epochs=10,verbose=False)
-    #y_pred = model.predict(X_test)
-    score, acc = model.evaluate(X_test, y_test)#, batch_size=batch_size)
-    return acc
+# def run_model(X_train, X_test, y_train, y_test):
+#     encoder = LabelEncoder()
+#     y_train = encoder.fit_transform(y_train)
+#     y_train = pd.get_dummies(y_train).values
+#     y_test = encoder.fit_transform(y_test)
+#     y_test = pd.get_dummies(y_test).values
+#
+#     model = Sequential()
+#     model.add(Dense(10, input_shape=(4,), activation='tanh'))
+#     model.add(Dense(8, activation='tanh'))
+#     model.add(Dense(6, activation='tanh'))
+#     model.add(Dense(3, activation='softmax'))
+#
+#     model.compile(Adam(lr=0.04), 'categorical_crossentropy', metrics=['accuracy'])
+#     model.fit(X_train, y_train, epochs=10,verbose=False)
+#     #y_pred = model.predict(X_test)
+#     score, acc = model.evaluate(X_test, y_test)#, batch_size=batch_size)
+#     return acc
 
 samples = datasets.load_iris()
 X = samples.data

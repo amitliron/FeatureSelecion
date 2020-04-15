@@ -65,6 +65,64 @@ def print_statistics(df):
         print("Column: ", df.columns[col]," Mean: ", mean, " var = ", var, " var/mean: ", ratio)
     print("")
 
+
+def add_deep_learning_prediction(classifier_list, scores_result, df):
+
+    # check if we need to be here
+    if 'deep_learning' not in classifier_list:
+        return
+
+    # add all imports
+    from keras.models import Sequential
+    from keras.layers import Dense
+    from keras.optimizers import SGD, Adam
+    from sklearn.preprocessing import LabelEncoder
+    from keras.layers import Dropout
+
+    # prepare data
+    X = df[df.columns[:-1]]
+    y = df[df.columns[-1]]
+
+    # hot encoding
+    encoder = LabelEncoder()
+    y1 = encoder.fit_transform(y)
+    y = pd.get_dummies(y1).values
+
+    # split
+    from sklearn.model_selection import train_test_split
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3)
+
+    # build model
+    model = Sequential()
+    model.add(Dense(81, activation='relu', input_shape = ((df.shape[1]-1),)))
+    # model.add(Dense(81, activation='relu'))
+    # model.add(Dense(40, activation='relu'))
+    # model.add(Dense(40, activation='relu'))
+    # model.add(Dense(40, activation='relu'))
+    # model.add(Dense(9, activation='relu'))
+    # model.add(Dense(9, activation='relu'))
+    model.add(Dropout(0.2))
+    model.add(Dense(y.shape[1], activation='softmax'))
+
+
+
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+    #model.compile(Adam(lr=0.04), 'categorical_crossentropy', metrics=['accuracy'])
+
+    # validation_split=0.3
+    model.fit(X_train, y_train)
+    score, acc = model.evaluate(X_test, y_test, verbose=0)
+    #model.fit(X_train, y_train)
+    #y_pred = model.predict(X_test)
+    scores_result['deep_learning'] = score
+    None
+
+
+    # save results
+    scores_result[type(model).__name__] = model.score(X_test, y_test)
+
+
+
 def run_model(df):
 
     from sklearn.model_selection import train_test_split
@@ -73,14 +131,13 @@ def run_model(df):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3)
     classifier_list = get_classifiers_list()
     scores_result = {}
+
+    add_deep_learning_prediction(classifier_list, scores_result, df)
+
     for classifier_name in classifier_list:
         classifier = create_classifier(classifier_name)
         classifier.fit(X, y)
         scores_result[type(classifier).__name__ ] = classifier.score(X_test, y_test)
-
-    from Keras import KerasMain
-    score = KerasMain.run_model(X_train, X_test, y_train, y_test)
-    scores_result["keras"] = score
 
     max_predict_value = max(scores_result.values())
     min_predict_value = min(scores_result.values())
@@ -124,6 +181,9 @@ def get_classifiers_list():
     if config['Classifier']['logistic_regression'] == "True":
         res.append('logistic_regression')
 
+    if config['Classifier']['deep_learning'] == "True":
+        res.append('deep_learning')
+
     return res
 
 
@@ -153,6 +213,7 @@ def create_classifier(classifier_name = None):
     if classifier_name=='logistic_regression':
         from sklearn.linear_model import LogisticRegression
         classifier = LogisticRegression(solver='lbfgs')
+
 
     return classifier
 

@@ -109,17 +109,12 @@ def add_deep_learning_prediction(classifier_list, scores_result, df):
     model.add(Dense(150, activation='relu'))
     model.add(Dense(y.shape[1], activation='softmax'))
 
-
-
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-    #model.compile(Adam(lr=0.04), 'categorical_crossentropy', metrics=['accuracy'])
 
     # validation_split=0.3
     model.fit(X_train, y_train,epochs=120)
-    score, acc = model.evaluate(X_test, y_test, verbose=0)
-    #model.fit(X_train, y_train)
-    #y_pred = model.predict(X_test)
-    scores_result['deep_learning'] = score
+    lost_value, metric = model.evaluate(X_test, y_test, verbose=0)
+    scores_result['deep_learning'] = metric
     None
 
 

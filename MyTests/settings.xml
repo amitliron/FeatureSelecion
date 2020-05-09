@@ -1,0 +1,29 @@
+<FeatureSelection>
+	<General
+			EnableFeatureSelection="TRUE"
+            DebugTestAllOptions="true"
+            LowVarianceMethod="false"
+            FilterMethod="true"
+            WrapperMethod="FALSE"
+            EmbeddedMethod="true"
+    />
+	<LowVariance>
+		<MinThresholdInPresentageToPreserved value="20"/>
+	</LowVariance>
+	<FilterMethods>
+        <!-- Method:    PCA-->
+        <!-- selectkbest k - unsupervided ? -->
+        <!-- corr - what will be the alpha ? -->
+		<General Method= "PCA"/>
+	</FilterMethods>
+	<WrapperMethods>
+        <!-- WrapperMethods always run in background -->
+		<!-- Method:    SFS, SBS, SFFS, SBFS, RFECV-->
+        <!-- Scoring:    accuracy, roc_auc-->
+		<General Method="SFS" RunInBackground = "true" Scoring="roc_auc"/>
+	</WrapperMethods>
+	<EmbeddedMethod>
+        <!-- Method:    RF, Lasso-->
+		<General Method="RF"/>
+	</EmbeddedMethod>
+</FeatureSelection>

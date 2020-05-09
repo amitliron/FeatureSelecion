@@ -14,7 +14,8 @@ def generate_dataset(plot=False, num_of_features=40):
     # X - array of shape[n_samples, n_features]
     # y - array of shape [n_samples] (labels)
     # flip_y - noise
-    X1, Y1 = make_classification(flip_y=0.35, weights = [0.65, 0.35], n_features=num_of_features, n_redundant=n_redundant, n_informative=n_informative,n_classes=2,n_clusters_per_class=3, n_samples=50000)
+    X1, Y1 = make_classification(flip_y=0.35, weights = [0.65, 0.35], n_features=num_of_features, n_redundant=n_redundant, n_informative=n_informative,n_classes=2,n_clusters_per_class=3, n_samples=500)
+    None
 
     if plot==True:
         plt.figure(figsize=(8, 8))
@@ -30,4 +31,4 @@ def generate_dataset(plot=False, num_of_features=40):
         col_names.append('COL_' + str(i))
     df.columns = col_names
     df['Taregt'] = Y1
-    return df
+    return df, X1, Y1

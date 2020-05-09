@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.metrics import roc_auc_score
+
 
 def plot_empty_values(df):
     columns = list(df)
@@ -136,8 +138,10 @@ def run_model(df):
 
     for classifier_name in classifier_list:
         classifier = create_classifier(classifier_name)
-        classifier.fit(X, y)
-        scores_result[type(classifier).__name__ ] = classifier.score(X_test, y_test)
+        classifier.fit(X_train, y_train)
+        #scores_result[type(classifier).__name__ ] = classifier.score(X_test, y_test)
+        y_scores = classifier.predict(X_test)
+        scores_result[type(classifier).__name__] = roc_auc_score(y_test, y_scores, multi_class='ovo')
 
     max_predict_value = max(scores_result.values())
     min_predict_value = min(scores_result.values())
@@ -300,7 +304,7 @@ def test_python(df):
 
 def main():
     df = load_input()
-    #preprocessing(df)
+    preprocessing(df)
     run_model(df)
 
 

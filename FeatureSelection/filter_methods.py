@@ -42,7 +42,7 @@ def use_select_k_best(func, df, X, y):
     from sklearn.feature_selection import SelectKBest
     from sklearn.feature_selection import SelectPercentile
     selector = SelectKBest(func, k='all').fit(X, y)
-    selector = SelectPercentile(func, percentile=90).fit(X, y)
+    #selector = SelectPercentile(func, percentile=90).fit(X, y)
     res = selector.transform(X)
 
     support = np.asarray(selector.get_support())
@@ -84,7 +84,7 @@ def filter_methods(df, X, y):
 
     #kolmogorov_smirnov(df, X, y)
     res1 = remove_low_variance(df, X, y)
-    res2 = use_select_k_best(chi2, df, X, y)
+    res2 = None #use_select_k_best(chi2, df, X, y)
     res3 = use_select_k_best(f_classif, df, X, y)
     res4 = use_select_k_best(mutual_info_classif, df, X, y)
     res5 = correlation_between_features_to_them_self(df, max_threshold=0.4)
